@@ -80,7 +80,6 @@ export function CardForm({ channel }: CardFormProps) {
       <CardContent className="p-5">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {/* Recipient */}
             <FormField
               control={form.control}
               name="to"
@@ -100,8 +99,6 @@ export function CardForm({ channel }: CardFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Orientation */}
             <FormField
               control={form.control}
               name="orientation"
@@ -130,8 +127,6 @@ export function CardForm({ channel }: CardFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Alignment */}
             <FormField
               control={form.control}
               name="alignment"
@@ -160,8 +155,6 @@ export function CardForm({ channel }: CardFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Height */}
             <FormField
               control={form.control}
               name="height"
@@ -191,8 +184,6 @@ export function CardForm({ channel }: CardFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Title */}
             <FormField
               control={form.control}
               name="title"
@@ -211,8 +202,6 @@ export function CardForm({ channel }: CardFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Description */}
             <FormField
               control={form.control}
               name="description"
@@ -232,8 +221,6 @@ export function CardForm({ channel }: CardFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Media URL */}
             <FormField
               control={form.control}
               name="mediaUrl"
@@ -253,8 +240,6 @@ export function CardForm({ channel }: CardFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Thumbnail URL */}
             <FormField
               control={form.control}
               name="thumbnailUrl"
@@ -274,8 +259,6 @@ export function CardForm({ channel }: CardFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Submit */}
             <Button
               type="submit"
               className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] 

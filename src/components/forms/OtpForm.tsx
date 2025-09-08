@@ -80,7 +80,6 @@ export function OtpForm({ channel }: OtpFormProps) {
     },
   });
 
-  // ✅ Викликаємо useFieldArray на верхньому рівні
   const {
     fields: params,
     append,
@@ -91,7 +90,6 @@ export function OtpForm({ channel }: OtpFormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof otpSchema>) {
-    // 🔹 Перетворюємо масив {key, value} → об'єкт { key: value }
     const paramsObj = values.parameters.reduce(
       (acc, p) => ({ ...acc, [p.key]: p.value }),
       {}
@@ -101,7 +99,7 @@ export function OtpForm({ channel }: OtpFormProps) {
       const payload = {
         type: "otp",
         templateId: values.templateId,
-        parameters: paramsObj, // ✅ Тепер у форматі { name: "Sofia", code: "123456" }
+        parameters: paramsObj, 
         language: values.language,
       };
 
@@ -125,7 +123,6 @@ export function OtpForm({ channel }: OtpFormProps) {
       <CardContent className="p-5">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {/* Recipient */}
             <FormField
               control={form.control}
               name="to"
@@ -145,8 +142,6 @@ export function OtpForm({ channel }: OtpFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Template ID */}
             <FormField
               control={form.control}
               name="templateId"
@@ -166,8 +161,6 @@ export function OtpForm({ channel }: OtpFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Parameters */}
             <FormItem>
               <FormLabel className="text-[var(--foreground)] font-medium">
                 Parameters
@@ -202,7 +195,6 @@ export function OtpForm({ channel }: OtpFormProps) {
                       </FormControl>
                     )}
                   />
-
                   <Button
                     type="button"
                     variant="destructive"
@@ -212,7 +204,6 @@ export function OtpForm({ channel }: OtpFormProps) {
                   </Button>
                 </div>
               ))}
-
               <div className="mt-2">
                 <Button
                   type="button"
@@ -222,11 +213,8 @@ export function OtpForm({ channel }: OtpFormProps) {
                   + Add Parameter
                 </Button>
               </div>
-
               <FormMessage className="text-[var(--error)]" />
             </FormItem>
-
-            {/* Language */}
             <FormField
               control={form.control}
               name="language"
@@ -258,8 +246,6 @@ export function OtpForm({ channel }: OtpFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Submit */}
             <Button
               type="submit"
               className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] transition-colors rounded-md border-none"

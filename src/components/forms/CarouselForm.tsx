@@ -66,7 +66,6 @@ function CarouselItemFields({
 
   return (
     <Card className="bg-[var(--popover)] border border-[var(--border)] p-4 rounded-lg space-y-4">
-      {/* Title */}
       <FormField
         control={control}
         name={`items.${index}.title`}
@@ -86,8 +85,6 @@ function CarouselItemFields({
           </FormItem>
         )}
       />
-
-      {/* Description */}
       <FormField
         control={control}
         name={`items.${index}.description`}
@@ -107,8 +104,6 @@ function CarouselItemFields({
           </FormItem>
         )}
       />
-
-      {/* Media URL */}
       <FormField
         control={control}
         name={`items.${index}.mediaUrl`}
@@ -128,8 +123,6 @@ function CarouselItemFields({
           </FormItem>
         )}
       />
-
-      {/* Height */}
       <FormField
         control={control}
         name={`items.${index}.height`}
@@ -156,8 +149,6 @@ function CarouselItemFields({
           </FormItem>
         )}
       />
-
-      {/* Buttons */}
       {buttons.map((btn, btnIndex) => (
         <div key={btn.id} className="flex gap-2 items-end">
           <FormField
@@ -287,7 +278,6 @@ export function CarouselForm({ channel }: CarouselFormProps) {
       <CardContent className="p-5">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-4">
-            {/* Recipient */}
             <FormField
               control={control}
               name="to"
@@ -307,8 +297,6 @@ export function CarouselForm({ channel }: CarouselFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Card Width */}
             <FormField
               control={control}
               name="cardWidth"
@@ -337,8 +325,6 @@ export function CarouselForm({ channel }: CarouselFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Text */}
             <FormField
               control={control}
               name="text"
@@ -358,8 +344,6 @@ export function CarouselForm({ channel }: CarouselFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Carousel Items */}
             {items.map((item, index) => (
               <CarouselItemFields
                 key={item.id}
@@ -368,7 +352,6 @@ export function CarouselForm({ channel }: CarouselFormProps) {
                 removeItem={removeItem}
               />
             ))}
-
             <Button
               type="button"
               onClick={() =>

@@ -114,7 +114,6 @@ export function MessageForm({ messageType }: MessageFormProps) {
             ))}
           </SelectContent>
         </Select>
-
         {selectedChannel && SpecificForm && (
           <div className="mt-8 w-full max-w-md bg-[var(--background)] rounded-lg p-6 shadow-md flex justify-center">
             <SpecificForm channel={selectedChannel} />

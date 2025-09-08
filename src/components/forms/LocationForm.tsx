@@ -101,7 +101,6 @@ function onSubmit(values: z.infer<typeof locationSchema>) {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="latitude"
@@ -123,7 +122,6 @@ function onSubmit(values: z.infer<typeof locationSchema>) {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="longitude"
@@ -145,7 +143,6 @@ function onSubmit(values: z.infer<typeof locationSchema>) {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="name"
@@ -165,7 +162,6 @@ function onSubmit(values: z.infer<typeof locationSchema>) {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="address"
@@ -185,7 +181,6 @@ function onSubmit(values: z.infer<typeof locationSchema>) {
                 </FormItem>
               )}
             />
-
             <Button
               type="submit"
               className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] transition-colors rounded-md border-none"

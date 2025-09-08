@@ -150,7 +150,6 @@ export function ContactForm({ channel }: ContactFormProps) {
       <CardContent className="p-5">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {/* Recipient */}
             <FormField
               control={form.control}
               name="to"
@@ -170,8 +169,6 @@ export function ContactForm({ channel }: ContactFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Name fields */}
             {[
               "firstName",
               "formattedName",
@@ -209,8 +206,6 @@ export function ContactForm({ channel }: ContactFormProps) {
                 )}
               />
             ))}
-
-            {/* Birthday */}
             <FormField
               control={form.control}
               name="birthday"
@@ -230,8 +225,6 @@ export function ContactForm({ channel }: ContactFormProps) {
                 </FormItem>
               )}
             />
-
-            {/* Emails */}
             <div className="space-y-2">
               <h4 className="text-[var(--foreground)] font-medium">
                 Emails (Optional)
@@ -286,8 +279,6 @@ export function ContactForm({ channel }: ContactFormProps) {
                 Add Email
               </Button>
             </div>
-
-            {/* Phones */}
             <div className="space-y-2">
               <h4 className="text-[var(--foreground)] font-medium">
                 Phones (Optional)
@@ -364,8 +355,6 @@ export function ContactForm({ channel }: ContactFormProps) {
                 Add Phone
               </Button>
             </div>
-
-            {/* Addresses */}
             <div className="space-y-2">
               <h4 className="text-[var(--foreground)] font-medium">
                 Addresses (Optional)
@@ -433,8 +422,6 @@ export function ContactForm({ channel }: ContactFormProps) {
                 Add Address
               </Button>
             </div>
-
-            {/* URLs */}
             <div className="space-y-2">
               <h4 className="text-[var(--foreground)] font-medium">
                 URLs (Optional)
@@ -488,8 +475,6 @@ export function ContactForm({ channel }: ContactFormProps) {
                 Add URL
               </Button>
             </div>
-
-            {/* Org */}
             <div className="space-y-2">
               <h4 className="text-[var(--foreground)] font-medium">
                 Organization (Optional)
@@ -516,7 +501,6 @@ export function ContactForm({ channel }: ContactFormProps) {
                 />
               ))}
             </div>
-
             <Button
               type="submit"
               className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] rounded-md border-none"
