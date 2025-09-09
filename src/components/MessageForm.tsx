@@ -18,6 +18,7 @@ import { OtpForm } from "./forms/OtpForm";
 import { ContactForm } from "./forms/ContactForm";
 import { CardForm } from "./forms/CardForm";
 import { CarouselForm } from "./forms/CarouselForm";
+import { TwoFAForm } from "./forms/2FAForm";
 
 type MessageFormProps = {
   messageType:
@@ -32,7 +33,8 @@ type MessageFormProps = {
     | "Otp"
     | "Contact"
     | "Card"
-    | "Carousel";
+    | "Carousel"
+    | "TwoFA"
 };
 
 const forms = {
@@ -47,7 +49,8 @@ const forms = {
   Otp: OtpForm,
   Contact: ContactForm,
   Card: CardForm,
-  Carousel: CarouselForm
+  Carousel: CarouselForm,
+  TwoFA: TwoFAForm
 };
 
 const channelMap: Record<MessageFormProps["messageType"], string[]> = {
@@ -63,6 +66,7 @@ const channelMap: Record<MessageFormProps["messageType"], string[]> = {
   Contact: ["Whatsapp"],
   Card: ["RCS"],
   Carousel: ["Viber", "RCS"],
+  TwoFA: ["SMS"]
 };
 
 export function MessageForm({ messageType }: MessageFormProps) {

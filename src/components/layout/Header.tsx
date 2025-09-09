@@ -16,10 +16,11 @@ export function Header() {
     { title: "List", href: "/list" },
     { title: "Location", href: "/location" },
     { title: "Sticker", href: "/sticker" },
-    { title: "OTP", href: "/otp" },
+    // { title: "OTP", href: "/otp" },
     { title: "Contact", href: "/contact" },
     { title: "Card", href: "/card" },
     { title: "Carousel", href: "/carousel" },
+    { title: "2FA PIN code", href: "/2fa" },
   ];
 
   const location = useLocation(); 
