@@ -32,13 +32,20 @@ const schema = z.object({
       title: z.string().min(2, "Title must be at least 2 characters long"),
       description: z.string().min(1, "Description is required"),
       mediaUrl: z.string().url("Must be a valid URL"),
+      thumbnailUrl: z
+        .string()
+        .url("Must be a valid URL")
+        .or(z.literal("")) 
+        .optional(),
       height: z.enum(["SHORT", "MEDIUM", "TALL"]),
-      buttons: z.array(
-        z.object({
-          title: z.string().min(1, "Button title required"),
-          action: z.string().min(1, "Button action required"),
-        })
-      ),
+      buttons: z
+        .array(
+          z.object({
+            title: z.string().min(1, "Button title required"),
+            action: z.string().min(1, "Button action required"),
+          })
+        )
+        .max(2, "Maximum 2 buttons allowed"),
     })
   ),
 });
@@ -126,6 +133,25 @@ function CarouselItemFields({
       />
       <FormField
         control={control}
+        name={`items.${index}.thumbnailUrl`}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-[var(--foreground)] font-medium">
+              Thumbnail URL (Optional)
+            </FormLabel>
+            <FormControl className="mt-2">
+              <Input
+                placeholder="Thumbnail URL"
+                {...field}
+                className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0 focus:border-none"
+              />
+            </FormControl>
+            <FormMessage className="text-[var(--error)]" />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
         name={`items.${index}.height`}
         render={({ field }) => (
           <FormItem>
@@ -199,15 +225,15 @@ function CarouselItemFields({
           </Button>
         </div>
       ))}
-
-      <Button
-        type="button"
-        onClick={() => addButton({ title: "", action: "" })}
-        className="w-full bg-[var(--primary)] text-[var(--primary-foreground)]"
-      >
-        + Add Button
-      </Button>
-
+      {buttons.length < 2 && (
+        <Button
+          type="button"
+          onClick={() => addButton({ title: "", action: "" })}
+          className="w-full bg-[var(--primary)] text-[var(--primary-foreground)]"
+        >
+          + Add Button
+        </Button>
+      )}
       <Button
         type="button"
         variant="destructive"
@@ -232,6 +258,7 @@ export function CarouselForm({ channel }: CarouselFormProps) {
           title: "",
           description: "",
           mediaUrl: "",
+          thumbnailUrl: "",
           height: "SHORT",
           buttons: [{ title: "", action: "" }],
         },

@@ -20,7 +20,10 @@ const schema = z.object({
   to: z.array(z.string().min(1)).min(1, "At least one recipient is required"),
   text: z.string().min(1, "Text is required"),
   actionTitle: z.string().min(1, "Action title is required"),
-  options: z.array(z.string().min(1, "Option cannot be empty")),
+  options: z
+    .array(z.string().min(1, "Option cannot be empty"))
+    .min(2, "At least 2 options are required")
+    .max(5, "Maximum 5 options allowed"),
 });
 
 type ListFormProps = {
@@ -148,13 +151,15 @@ const onSubmit = async (values: z.infer<typeof schema>) => {
                 )}
               />
             ))}
-            <Button
-              type="button"
-              onClick={() => addOption("")}
-              className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] transition-colors rounded-md border-none"
-            >
-              + Add Option
-            </Button>
+            {options.length < 5 && (
+              <Button
+                type="button"
+                onClick={() => addOption("")}
+                className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] transition-colors rounded-md border-none"
+              >
+                + Add Option
+              </Button>
+            )}
             <Button
               type="submit"
               className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] transition-colors rounded-md border-none"

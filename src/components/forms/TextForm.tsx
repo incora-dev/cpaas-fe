@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button as UIButton } from "../ui/button";
 import {
   Form,
   FormField,
@@ -10,15 +10,23 @@ import {
   FormControl,
   FormMessage,
 } from "../ui/form";
+import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { toast } from "sonner";
 import { sendMessage } from "../../services/api";
+import { useState } from "react";
 import { RecipientField } from "../RecipientField";
 
 const formSchema = z.object({
   to: z.array(z.string().min(1)).min(1, "At least one recipient is required"),
   text: z.string().min(1, "Message text is required"),
+  button: z
+    .object({
+      title: z.string().min(1, "Button title required"),
+      action: z.string().min(1, "Button action required"),
+    })
+    .optional(),
 });
 
 type TextFormProps = {
@@ -26,11 +34,14 @@ type TextFormProps = {
 };
 
 export function TextForm({ channel }: TextFormProps) {
+  const [showButtonFields, setShowButtonFields] = useState(false);
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       to: [],
       text: "",
+      button: undefined,
     },
   });
 
@@ -39,6 +50,7 @@ export function TextForm({ channel }: TextFormProps) {
       const payload = {
         type: "text",
         text: values.text,
+        button: values.button || undefined,
       };
 
       const res = await sendMessage(channel, values.to, payload);
@@ -82,13 +94,73 @@ export function TextForm({ channel }: TextFormProps) {
                 </FormItem>
               )}
             />
-            <Button
+            {!showButtonFields ? (
+              <UIButton
+                type="button"
+                onClick={() => setShowButtonFields(true)}
+                className="w-full bg-[var(--primary)] text-[var(--primary-foreground)]"
+              >
+                + Add Button
+              </UIButton>
+            ) : (
+              <>
+                <FormField
+                  control={form.control}
+                  name="button.title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[var(--foreground)] font-medium">
+                        Button Title
+                      </FormLabel>
+                      <FormControl className="mt-2">
+                        <Input
+                          placeholder="Button title"
+                          {...field}
+                          className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-[var(--error)]" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="button.action"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[var(--foreground)] font-medium">
+                        Button Action
+                      </FormLabel>
+                      <FormControl className="mt-2">
+                        <Input
+                          placeholder="Button action (URL)"
+                          {...field}
+                          className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-[var(--error)]" />
+                    </FormItem>
+                  )}
+                />
+                <UIButton
+                  type="button"
+                  variant="destructive"
+                  onClick={() => {
+                    form.setValue("button", undefined);
+                    setShowButtonFields(false);
+                  }}
+                >
+                  Remove Button
+                </UIButton>
+              </>
+            )}
+            <UIButton
               type="submit"
               className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] 
                transition-colors rounded-md border-none"
             >
               Send
-            </Button>
+            </UIButton>
           </form>
         </Form>
       </CardContent>

@@ -25,6 +25,7 @@ const schema = z.object({
     .string()
     .min(1, "Filename is required")
     .regex(filenameRegex, "Filename must include an extension"),
+  caption: z.string().optional(),
 });
 
 type FileFormProps = {
@@ -37,7 +38,8 @@ export function FileForm({ channel }: FileFormProps) {
     defaultValues: {
       to: [],
       mediaUrl: "",
-      filename: ""
+      filename: "",
+      caption: ""
     },
   });
 
@@ -47,6 +49,7 @@ const onSubmit = async (values: z.infer<typeof schema>) => {
       type: "file",
       mediaUrl: values.mediaUrl,
       filename: values.filename,
+      caption: values.caption || undefined,
     };
 
     const res = await sendMessage(channel, values.to, payload);
@@ -102,6 +105,25 @@ const onSubmit = async (values: z.infer<typeof schema>) => {
                       placeholder="Filename"
                       {...field}
                       className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0 focus:border-none"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-[var(--error)]" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="caption"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[var(--foreground)] font-medium">
+                    Caption (Optional)
+                  </FormLabel>
+                  <FormControl className="mt-2">
+                    <Input
+                      placeholder="Image caption"
+                      {...field}
+                      className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
                     />
                   </FormControl>
                   <FormMessage className="text-[var(--error)]" />
