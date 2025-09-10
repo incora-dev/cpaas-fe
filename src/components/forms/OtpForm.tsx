@@ -21,9 +21,19 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { toast } from "sonner";
 import { sendMessage } from "../../services/api";
+import { RecipientField } from "../RecipientField";
 
 const otpSchema = z.object({
-  to: z.string().min(1, "Recipient is required"),
+  to: z
+    .string()
+    .min(1, "At least one recipient is required")
+    .transform((val) =>
+      val
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    )
+    .refine((arr) => arr.length > 0, "At least one recipient is required"),
   templateId: z.string().min(1, "Template ID is required"),
   parameters: z
     .array(z.object({ key: z.string().min(1), value: z.string().min(1) }))
@@ -73,7 +83,7 @@ export function OtpForm({ channel }: OtpFormProps) {
   const form = useForm<z.infer<typeof otpSchema>>({
     resolver: zodResolver(otpSchema),
     defaultValues: {
-      to: "",
+      to: [],
       templateId: "",
       parameters: [{ key: "", value: "" }],
       language: "ENGLISH",
@@ -123,25 +133,7 @@ export function OtpForm({ channel }: OtpFormProps) {
       <CardContent className="p-5">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="to"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[var(--foreground)] font-medium">
-                    Recipient
-                  </FormLabel>
-                  <FormControl className="mt-2">
-                    <Input
-                      placeholder="Recipient phone number"
-                      {...field}
-                      className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0 focus:border-none"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-[var(--error)]" />
-                </FormItem>
-              )}
-            />
+            <RecipientField control={form.control} />
             <FormField
               control={form.control}
               name="templateId"

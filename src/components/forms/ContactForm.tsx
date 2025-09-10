@@ -21,9 +21,19 @@ import {
 } from "../ui/select";
 import { toast } from "sonner";
 import { sendMessage } from "../../services/api";
+import { RecipientField } from "../RecipientField";
 
 const contactSchema = z.object({
-  to: z.string().min(1, "Recipient is required"),
+  to: z
+    .string()
+    .min(1, "At least one recipient is required")
+    .transform((val) =>
+      val
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    )
+    .refine((arr) => arr.length > 0, "At least one recipient is required"),
   name: z.object({
     firstName: z.string().min(1, "First name is required"),
     formattedName: z.string().min(1, "Formatted name is required"),
@@ -77,7 +87,7 @@ const contactSchema = z.object({
       department: z.string().optional(),
       title: z.string().optional(),
     })
-    .optional()
+    .optional(),
 });
 
 function formatLabel(fieldName: string) {
@@ -94,7 +104,7 @@ export function ContactForm({ channel }: ContactFormProps) {
   const form = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
-      to: "",
+      to: [],
       name: { firstName: "", formattedName: "" },
       emails: [],
       phones: [],
@@ -150,25 +160,7 @@ export function ContactForm({ channel }: ContactFormProps) {
       <CardContent className="p-5">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="to"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[var(--foreground)] font-medium">
-                    Recipient
-                  </FormLabel>
-                  <FormControl className="mt-2">
-                    <Input
-                      {...field}
-                      placeholder="Recipient phone number"
-                      className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-[var(--error)]" />
-                </FormItem>
-              )}
-            />
+            <RecipientField control={form.control} />
             {[
               "firstName",
               "formattedName",

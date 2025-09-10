@@ -14,11 +14,21 @@ import { Input } from "../ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { sendMessage } from "../../services/api";
 import { toast } from "sonner";
+import { RecipientField } from "../RecipientField";
 
 const filenameRegex = /.+\.[a-zA-Z0-9]+$/;
 
 const schema = z.object({
-  to: z.string().min(1, "Recipient is required"),
+  to: z
+    .string()
+    .min(1, "At least one recipient is required")
+    .transform((val) =>
+      val
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    )
+    .refine((arr) => arr.length > 0, "At least one recipient is required"),
   mediaUrl: z.string().url("Must be a valid URL"),
   filename: z
     .string()
@@ -34,7 +44,7 @@ export function FileForm({ channel }: FileFormProps) {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      to: "",
+      to: [],
       mediaUrl: "",
       filename: ""
     },
@@ -68,25 +78,7 @@ const onSubmit = async (values: z.infer<typeof schema>) => {
       <CardContent className="p-5">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="to"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[var(--foreground)] font-medium">
-                    Recipient
-                  </FormLabel>
-                  <FormControl className="mt-2">
-                    <Input
-                      placeholder="Recipient phone number"
-                      {...field}
-                      className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0 focus:border-none"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-[var(--error)]" />
-                </FormItem>
-              )}
-            />
+            <RecipientField control={form.control} />
             <FormField
               control={form.control}
               name="mediaUrl"
@@ -106,25 +98,25 @@ const onSubmit = async (values: z.infer<typeof schema>) => {
                 </FormItem>
               )}
             />
-              <FormField
-                control={form.control}
-                name="filename"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[var(--foreground)] font-medium">
-                      File Name
-                    </FormLabel>
-                    <FormControl className="mt-2">
-                      <Input
-                        placeholder="Filename"
-                        {...field}
-                        className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0 focus:border-none"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-[var(--error)]" />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="filename"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[var(--foreground)] font-medium">
+                    File Name
+                  </FormLabel>
+                  <FormControl className="mt-2">
+                    <Input
+                      placeholder="Filename"
+                      {...field}
+                      className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0 focus:border-none"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-[var(--error)]" />
+                </FormItem>
+              )}
+            />
             <Button
               type="submit"
               className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] transition-colors rounded-md border-none"

@@ -22,9 +22,19 @@ import {
 } from "../ui/select";
 import { toast } from "sonner";
 import { sendMessage } from "../../services/api";
+import { RecipientField } from "../RecipientField";
 
 const cardSchema = z.object({
-  to: z.string().min(1, "Recipient is required"),
+  to: z
+    .string()
+    .min(1, "At least one recipient is required")
+    .transform((val) =>
+      val
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    )
+    .refine((arr) => arr.length > 0, "At least one recipient is required"),
   orientation: z.enum(["HORIZONTAL", "VERTICAL"]),
   alignment: z.enum(["LEFT", "RIGHT"]),
   height: z.enum(["SHORT", "MEDIUM", "TALL"]),
@@ -42,7 +52,7 @@ export function CardForm({ channel }: CardFormProps) {
   const form = useForm<z.infer<typeof cardSchema>>({
     resolver: zodResolver(cardSchema),
     defaultValues: {
-      to: "",
+      to: [],
       orientation: "HORIZONTAL",
       alignment: "LEFT",
       height: "MEDIUM",
@@ -80,25 +90,7 @@ export function CardForm({ channel }: CardFormProps) {
       <CardContent className="p-5">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="to"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[var(--foreground)] font-medium">
-                    Recipient
-                  </FormLabel>
-                  <FormControl className="mt-2">
-                    <Input
-                      placeholder="Recipient phone number"
-                      {...field}
-                      className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-[var(--error)]" />
-                </FormItem>
-              )}
-            />
+            <RecipientField control={form.control} />
             <FormField
               control={form.control}
               name="orientation"

@@ -6,7 +6,7 @@ const api = axios.create({
 
 export const sendMessage = async (
   channel: string,
-  to: string,
+  to: string | string[],
   message: any
 ) => {
   const response = await api.post("/send", {

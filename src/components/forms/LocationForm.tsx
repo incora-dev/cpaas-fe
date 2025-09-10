@@ -14,9 +14,19 @@ import { Input } from "../ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { toast } from "sonner";
 import { sendMessage } from "../../services/api";
+import { RecipientField } from "../RecipientField";
 
 const locationSchema = z.object({
-  to: z.string().min(1, "Recipient is required"),
+  to: z
+    .string()
+    .min(1, "At least one recipient is required")
+    .transform((val) =>
+      val
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    )
+    .refine((arr) => arr.length > 0, "At least one recipient is required"),
   latitude: z.coerce
     .number()
     .refine(
@@ -43,7 +53,7 @@ export function LocationForm({ channel }: LocationFormProps) {
   const form = useForm<LocationFormValues>({
     resolver: zodResolver(locationSchema) as Resolver<LocationFormValues>,
     defaultValues: {
-      to: "",
+      to: [],
       latitude: 0,
       longitude: 0,
       name: "",
@@ -82,25 +92,7 @@ function onSubmit(values: z.infer<typeof locationSchema>) {
       <CardContent className="p-5">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="to"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[var(--foreground)] font-medium">
-                    Recipient
-                  </FormLabel>
-                  <FormControl className="mt-2">
-                    <Input
-                      placeholder="Recipient phone number"
-                      {...field}
-                      className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0 focus:border-none"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-[var(--error)]" />
-                </FormItem>
-              )}
-            />
+            <RecipientField control={form.control} />
             <FormField
               control={form.control}
               name="latitude"
