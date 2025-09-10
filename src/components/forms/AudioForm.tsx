@@ -17,16 +17,7 @@ import { toast } from "sonner";
 import { RecipientField } from "../RecipientField";
 
 const formSchema = z.object({
-  to: z
-    .string()
-    .min(1, "At least one recipient is required")
-    .transform((val) =>
-      val
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
-    )
-    .refine((arr) => arr.length > 0, "At least one recipient is required"),
+  to: z.array(z.string().min(1)).min(1, "At least one recipient is required"),
   mediaUrl: z.string().url("Must be a valid URL"),
   caption: z.string().optional(),
 });

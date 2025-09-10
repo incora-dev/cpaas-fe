@@ -17,16 +17,7 @@ import { sendMessage } from "../../services/api";
 import { RecipientField } from "../RecipientField";
 
 const twoFASchema = z.object({
-  to: z
-    .string()
-    .min(1, "At least one recipient is required")
-    .transform((val) =>
-      val
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
-    )
-    .refine((arr) => arr.length > 0, "At least one recipient is required"),
+  to: z.array(z.string().min(1)).min(1, "At least one recipient is required"),
   placeholders: z.array(
     z.object({ key: z.string().min(1), value: z.string().min(1) })
   ),

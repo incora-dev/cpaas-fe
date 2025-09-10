@@ -24,16 +24,7 @@ import { sendMessage } from "../../services/api";
 import { RecipientField } from "../RecipientField";
 
 const schema = z.object({
-  to: z
-    .string()
-    .min(1, "At least one recipient is required")
-    .transform((val) =>
-      val
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
-    )
-    .refine((arr) => arr.length > 0, "At least one recipient is required"),
+  to: z.array(z.string().min(1)).min(1, "At least one recipient is required"),
   cardWidth: z.enum(["SMALL", "MEDIUM"]),
   text: z.string().min(1, "Text is required"),
   items: z.array(
