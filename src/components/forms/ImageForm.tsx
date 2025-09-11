@@ -16,6 +16,7 @@ import { sendMessage } from "../../services/api";
 import { toast } from "sonner";
 import { useState } from "react";
 import { RecipientField } from "../RecipientField";
+import { ImagePreview } from "../preview/ImagePreview";
 
 const formSchema = z.object({
   to: z.array(z.string().min(1)).min(1, "At least one recipient is required"),
@@ -46,6 +47,10 @@ export function ImageForm({ channel }: ImageFormProps) {
     },
   });
 
+    const mediaUrl = form.watch("mediaUrl");
+    const caption = form.watch("caption");
+    const button = form.watch("button");
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const payload = {
@@ -66,123 +71,131 @@ export function ImageForm({ channel }: ImageFormProps) {
   }
 
   return (
-    <Card className="w-200 max-w-sm bg-[var(--card)] shadow-xl rounded-xl border border-[var(--border)]">
-      <CardHeader className="bg-[var(--popover)] rounded-t-xl border-b border-[var(--border)]">
-        <CardTitle className="text-[var(--primary)] text-lg font-bold">
-          Send {channel} Image
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-5">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <RecipientField control={form.control} />
-            <FormField
-              control={form.control}
-              name="mediaUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[var(--foreground)] font-medium">
-                    Media URL
-                  </FormLabel>
-                  <FormControl className="mt-2">
-                    <Input
-                      placeholder="Image URL"
-                      {...field}
-                      className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-[var(--error)]" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="caption"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[var(--foreground)] font-medium">
-                    Caption (Optional)
-                  </FormLabel>
-                  <FormControl className="mt-2">
-                    <Input
-                      placeholder="Image caption"
-                      {...field}
-                      className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-[var(--error)]" />
-                </FormItem>
-              )}
-            />
-            {!showButtonFields ? (
-              <UIButton
-                type="button"
-                onClick={() => setShowButtonFields(true)}
-                className="w-full bg-[var(--primary)] text-[var(--primary-foreground)]"
-              >
-                + Add Button
-              </UIButton>
-            ) : (
-              <>
-                <FormField
-                  control={form.control}
-                  name="button.title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-[var(--foreground)] font-medium">
-                        Button Title
-                      </FormLabel>
-                      <FormControl className="mt-2">
-                        <Input
-                          placeholder="Button title"
-                          {...field}
-                          className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
-                        />
-                      </FormControl>
-                      <FormMessage className="text-[var(--error)]" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="button.action"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-[var(--foreground)] font-medium">
-                        Button Action
-                      </FormLabel>
-                      <FormControl className="mt-2">
-                        <Input
-                          placeholder="Button action (URL)"
-                          {...field}
-                          className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
-                        />
-                      </FormControl>
-                      <FormMessage className="text-[var(--error)]" />
-                    </FormItem>
-                  )}
-                />
+    <div className="flex gap-6">
+      <Card className="w-150 max-w-sm bg-[var(--card)] shadow-xl rounded-xl border border-[var(--border)]">
+        <CardHeader className="bg-[var(--popover)] rounded-t-xl border-b border-[var(--border)]">
+          <CardTitle className="text-[var(--primary)] text-lg font-bold">
+            Send {channel} Image
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-5">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <RecipientField control={form.control} />
+              <FormField
+                control={form.control}
+                name="mediaUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[var(--foreground)] font-medium">
+                      Media URL
+                    </FormLabel>
+                    <FormControl className="mt-2">
+                      <Input
+                        placeholder="Image URL"
+                        {...field}
+                        className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-[var(--error)]" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="caption"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[var(--foreground)] font-medium">
+                      Caption (Optional)
+                    </FormLabel>
+                    <FormControl className="mt-2">
+                      <Input
+                        placeholder="Image caption"
+                        {...field}
+                        className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-[var(--error)]" />
+                  </FormItem>
+                )}
+              />
+              {!showButtonFields ? (
                 <UIButton
                   type="button"
-                  variant="destructive"
-                  onClick={() => {
-                    form.setValue("button", undefined);
-                    setShowButtonFields(false);
-                  }}
+                  onClick={() => setShowButtonFields(true)}
+                  className="w-full bg-[var(--primary)] text-[var(--primary-foreground)]"
                 >
-                  Remove Button
+                  + Add Button
                 </UIButton>
-              </>
-            )}
-            <UIButton
-              type="submit"
-              className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] rounded-md"
-            >
-              Send
-            </UIButton>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              ) : (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="button.title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[var(--foreground)] font-medium">
+                          Button Title
+                        </FormLabel>
+                        <FormControl className="mt-2">
+                          <Input
+                            placeholder="Button title"
+                            {...field}
+                            className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
+                          />
+                        </FormControl>
+                        <FormMessage className="text-[var(--error)]" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="button.action"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[var(--foreground)] font-medium">
+                          Button Action
+                        </FormLabel>
+                        <FormControl className="mt-2">
+                          <Input
+                            placeholder="Button action (URL)"
+                            {...field}
+                            className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0"
+                          />
+                        </FormControl>
+                        <FormMessage className="text-[var(--error)]" />
+                      </FormItem>
+                    )}
+                  />
+                  <UIButton
+                    type="button"
+                    variant="destructive"
+                    onClick={() => {
+                      form.setValue("button", undefined);
+                      setShowButtonFields(false);
+                    }}
+                  >
+                    Remove Button
+                  </UIButton>
+                </>
+              )}
+              <UIButton
+                type="submit"
+                className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] rounded-md"
+              >
+                Send
+              </UIButton>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <ImagePreview
+        channel={channel}
+        mediaUrl={mediaUrl}
+        caption={caption}
+        button={button}
+      />
+    </div>
   );
 }

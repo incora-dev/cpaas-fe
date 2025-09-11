@@ -22,6 +22,7 @@ import {
 import { toast } from "sonner";
 import { sendMessage } from "../../services/api";
 import { RecipientField } from "../RecipientField";
+import { CarouselPreview } from "../preview/CarouselPreview";
 
 const schema = z.object({
   to: z.array(z.string().min(1)).min(1, "At least one recipient is required"),
@@ -260,7 +261,7 @@ export function CarouselForm({ channel }: CarouselFormProps) {
           mediaUrl: "",
           thumbnailUrl: "",
           height: "SHORT",
-          buttons: [{ title: "", action: "" }],
+          buttons: [],
         },
       ],
     },
@@ -276,6 +277,8 @@ export function CarouselForm({ channel }: CarouselFormProps) {
     control,
     name: "items" as const,
   });
+
+  const itemsPreview = form.watch("items");
 
   const onSubmit = async (values: z.infer<typeof schema>) => {
     try {
@@ -297,96 +300,102 @@ export function CarouselForm({ channel }: CarouselFormProps) {
   };
 
   return (
-    <Card className="w-200 max-w-2xl bg-[var(--card)] shadow-xl rounded-xl border border-[var(--border)]">
-      <CardHeader className="bg-[var(--popover)] rounded-t-xl border-b border-[var(--border)]">
-        <CardTitle className="text-[var(--primary)] text-lg font-bold">
-          Send {channel} Carousel
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-5">
-        <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-4">
-            <RecipientField control={form.control} />
-            <FormField
-              control={control}
-              name="cardWidth"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[var(--foreground)] font-medium">
-                    Card Width
-                  </FormLabel>
-                  <div className="mt-2">
-                    <FormControl className="mt-2">
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="bg-[var(--input)] text-[var(--foreground)]">
-                          <SelectValue placeholder="Select width" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="SMALL">SMALL</SelectItem>
-                          <SelectItem value="MEDIUM">MEDIUM</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </div>
-                  <FormMessage className="text-[var(--error)]" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="text"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[var(--foreground)] font-medium">
-                    Text
-                  </FormLabel>
-                  <FormControl className="mt-2">
-                    <Input
-                      placeholder="Text"
-                      {...field}
-                      className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0 focus:border-none"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-[var(--error)]" />
-                </FormItem>
-              )}
-            />
-            {items.map((item, index) => (
-              <CarouselItemFields
-                key={item.id}
+    <div className="flex gap-6">
+      <Card className="w-150 max-w-2xl bg-[var(--card)] shadow-xl rounded-xl border border-[var(--border)]">
+        <CardHeader className="bg-[var(--popover)] rounded-t-xl border-b border-[var(--border)]">
+          <CardTitle className="text-[var(--primary)] text-lg font-bold">
+            Send {channel} Carousel
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-5">
+          <Form {...form}>
+            <form
+              onSubmit={handleSubmit(onSubmit as any)}
+              className="space-y-4"
+            >
+              <RecipientField control={form.control} />
+              <FormField
                 control={control}
-                index={index}
-                removeItem={removeItem}
+                name="cardWidth"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[var(--foreground)] font-medium">
+                      Card Width
+                    </FormLabel>
+                    <div className="mt-2">
+                      <FormControl className="mt-2">
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="bg-[var(--input)] text-[var(--foreground)]">
+                            <SelectValue placeholder="Select width" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="SMALL">SMALL</SelectItem>
+                            <SelectItem value="MEDIUM">MEDIUM</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </div>
+                    <FormMessage className="text-[var(--error)]" />
+                  </FormItem>
+                )}
               />
-            ))}
-            <Button
-              type="button"
-              onClick={() =>
-                addItem({
-                  title: "",
-                  description: "",
-                  mediaUrl: "",
-                  height: "SHORT",
-                  buttons: [{ title: "", action: "" }],
-                })
-              }
-              className="w-full bg-[var(--primary)] text-[var(--primary-foreground)]"
-            >
-              + Add Item
-            </Button>
+              <FormField
+                control={control}
+                name="text"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[var(--foreground)] font-medium">
+                      Text
+                    </FormLabel>
+                    <FormControl className="mt-2">
+                      <Input
+                        placeholder="Text"
+                        {...field}
+                        className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0 focus:border-none"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-[var(--error)]" />
+                  </FormItem>
+                )}
+              />
+              {items.map((item, index) => (
+                <CarouselItemFields
+                  key={item.id}
+                  control={control}
+                  index={index}
+                  removeItem={removeItem}
+                />
+              ))}
+              <Button
+                type="button"
+                onClick={() =>
+                  addItem({
+                    title: "",
+                    description: "",
+                    mediaUrl: "",
+                    height: "SHORT",
+                    buttons: [{ title: "", action: "" }],
+                  })
+                }
+                className="w-full bg-[var(--primary)] text-[var(--primary-foreground)]"
+              >
+                + Add Item
+              </Button>
 
-            <Button
-              type="submit"
-              className="w-full bg-[var(--primary)] text-[var(--primary-foreground)]"
-            >
-              Send
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              <Button
+                type="submit"
+                className="w-full bg-[var(--primary)] text-[var(--primary-foreground)]"
+              >
+                Send
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <CarouselPreview channel={channel} items={itemsPreview} />
+    </div>
   );
 }

@@ -15,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { sendMessage } from "../../services/api";
 import { toast } from "sonner";
 import { RecipientField } from "../RecipientField";
+import { AudioPreview } from "../preview/AudioPreview";
 
 const formSchema = z.object({
   to: z.array(z.string().min(1)).min(1, "At least one recipient is required"),
@@ -35,6 +36,8 @@ export function AudioForm({ channel }: AudioFormProps) {
     },
   });
 
+  const mediaUrl = form.watch("mediaUrl");
+
 async function onSubmit(values: z.infer<typeof formSchema>) {
   try {
     const payload = {
@@ -53,45 +56,48 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
 }
 
   return (
-    <Card className="w-200 max-w-sm bg-[var(--card)] shadow-xl rounded-xl border border-[var(--border)]">
-      <CardHeader className="bg-[var(--popover)] rounded-t-xl border-b border-[var(--border)]">
-        <CardTitle className="text-[var(--primary)] text-lg font-bold">
-          Send {channel} Audio
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-5">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <RecipientField control={form.control} />
-            <FormField
-              control={form.control}
-              name="mediaUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[var(--foreground)] font-medium">
-                    Media URL
-                  </FormLabel>
-                  <FormControl className="mt-2">
-                    <Input
-                      placeholder="Audio URL"
-                      {...field}
-                      className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0 focus:border-none"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-[var(--error)]" />
-                </FormItem>
-              )}
-            />
-            <Button
-              type="submit"
-              className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] 
+    <div className="flex gap-6">
+      <Card className="w-150 max-w-sm bg-[var(--card)] shadow-xl rounded-xl border border-[var(--border)]">
+        <CardHeader className="bg-[var(--popover)] rounded-t-xl border-b border-[var(--border)]">
+          <CardTitle className="text-[var(--primary)] text-lg font-bold">
+            Send {channel} Audio
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-5">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <RecipientField control={form.control} />
+              <FormField
+                control={form.control}
+                name="mediaUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[var(--foreground)] font-medium">
+                      Media URL
+                    </FormLabel>
+                    <FormControl className="mt-2">
+                      <Input
+                        placeholder="Audio URL"
+                        {...field}
+                        className="bg-[var(--input)] text-[var(--foreground)] rounded-md border-none focus:ring-0 focus:border-none"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-[var(--error)]" />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] 
                  transition-colors rounded-md border-none"
-            >
-              Send
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              >
+                Send
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <AudioPreview mediaUrl={mediaUrl} />
+    </div>
   );
 }
